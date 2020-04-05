@@ -5,8 +5,8 @@ public class ProblemInstance
     public int providerAmount;
     public int clientAmount;
 
-    public int[] providerOpeningCost;
-    public int[][] clientConnectionCost;
+    public int[] providerOpeningCosts;
+    public int[][] clientConnectionCosts;
 
     public ProblemInstance(String name, int providerAmount, int clientAmount)
     {
@@ -14,18 +14,18 @@ public class ProblemInstance
         this.providerAmount = providerAmount;
         this.clientAmount = clientAmount;
 
-        providerOpeningCost = new int[providerAmount];
-        clientConnectionCost = new int[providerAmount][clientAmount];
+        providerOpeningCosts = new int[providerAmount];
+        clientConnectionCosts = new int[providerAmount][clientAmount];
     }
 
     public void addProviderOpeningCost(int provider, int cost)
     {
-        providerOpeningCost[provider] = cost;
+        providerOpeningCosts[provider] = cost;
     }
 
     public void addClientConnectionCost(int provider, int client, int cost)
     {
-        clientConnectionCost[provider][client] = cost;
+        clientConnectionCosts[provider][client] = cost;
     }
 
     public void print()
@@ -33,5 +33,27 @@ public class ProblemInstance
         System.out.println("Problem instance " + name + ".");
 
         System.out.println(providerAmount + " providers and " + clientAmount + " clients.");
+    }
+
+    public int eval(int[] openedProvidersIndices)
+    {
+        int providerCostSum = 0;
+        int connectionCostSum = 0;
+
+        for(int openedProviderIndex : openedProvidersIndices)
+            providerCostSum += providerOpeningCosts[openedProviderIndex];
+
+        for(int j = 0; j < clientAmount; j++)
+        {
+            int minConnectionCost = clientConnectionCosts[0][j];
+            for(int openedProviderIndex : openedProvidersIndices)
+            {
+                if(clientConnectionCosts[openedProviderIndex][j] > minConnectionCost)
+                    minConnectionCost = clientConnectionCosts[openedProviderIndex][j];
+            }
+            connectionCostSum += minConnectionCost;
+        }
+
+        return providerCostSum + connectionCostSum;
     }
 }
