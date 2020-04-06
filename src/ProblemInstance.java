@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class ProblemInstance
 {
     public String name;
@@ -35,7 +37,7 @@ public class ProblemInstance
         System.out.println(providerAmount + " providers and " + clientAmount + " clients.");
     }
 
-    public int eval(int[] openedProvidersIndices)
+    public int eval(ArrayList<Integer> openedProvidersIndices)
     {
         int providerCostSum = 0;
         int connectionCostSum = 0;
@@ -45,12 +47,15 @@ public class ProblemInstance
 
         for(int j = 0; j < clientAmount; j++)
         {
-            int minConnectionCost = clientConnectionCosts[0][j];
+            int minConnectionCost = clientConnectionCosts[openedProvidersIndices.get(0)][j];
             for(int openedProviderIndex : openedProvidersIndices)
             {
-                if(clientConnectionCosts[openedProviderIndex][j] > minConnectionCost)
+                if(clientConnectionCosts[openedProviderIndex][j] < minConnectionCost)
+                {
                     minConnectionCost = clientConnectionCosts[openedProviderIndex][j];
+                }
             }
+
             connectionCostSum += minConnectionCost;
         }
 

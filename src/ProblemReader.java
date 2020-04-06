@@ -6,7 +6,7 @@ public class ProblemReader
 {
     public ProblemInstance generateInstanceFromFile(String path)
     {
-        ProblemInstance pi;
+        ProblemInstance instance;
         try
         {
             File fileToRead = new File(path);
@@ -18,22 +18,22 @@ public class ProblemReader
 
             if(scanner.nextInt() != 0) throw new RuntimeException("Bad file format.");
 
-            pi = new ProblemInstance(name, providerAmount, clientAmount);
+            instance = new ProblemInstance(name, providerAmount, clientAmount);
 
             while(scanner.hasNextInt())
             {
                 int provider = scanner.nextInt() - 1;
                 int providerOpeningCost = scanner.nextInt();
-                pi.addProviderOpeningCost(provider, providerOpeningCost);
+                instance.addProviderOpeningCost(provider, providerOpeningCost);
 
                 for(int client = 0; client < clientAmount; client++)
                 {
                     int clientConnectionCost = scanner.nextInt();
-                    pi.addClientConnectionCost(provider, client, clientConnectionCost);
+                    instance.addClientConnectionCost(provider, client, clientConnectionCost);
                 }
             }
 
-            return pi;
+            return instance;
         }
         catch (FileNotFoundException e)
         {
