@@ -6,18 +6,24 @@ public class Main
     public static void main(String[] args)
     {
         System.out.println("Projet APG");
-        System.out.println("(GLPK version " + GLPK.glp_version() + ")\n");
 
         ProblemReader pr = new ProblemReader();
         ProblemInstance instance = pr.generateInstanceFromFile("C:\\Users\\utilisateur\\Desktop\\BildeKrarup\\B\\B1.1");
 
         instance.print();
-        ArrayList<Integer> openedProviders = Glouton.solve(instance);
 
         System.out.println("\n--------------------\nAlgorithme Glouton :");
+        ArrayList<Integer> openedProviders = Glouton.solve(instance);
         System.out.println("\tCoût = " + instance.eval(openedProviders));
         System.out.print("\tFournisseurs ouverts = ");
         displayOpenedProviders(openedProviders);
+        System.out.println("\n--------------------\n");
+
+        System.out.println("\n--------------------\nProgramme Linéaire :");
+        //System.out.println("\tCoût = " + instance.eval(openedProviders));
+        //System.out.print("\tFournisseurs ouverts = ");
+        //displayOpenedProviders(openedProviders);
+        GLPKSolver.solve(instance);
         System.out.println("\n--------------------\n");
     }
 

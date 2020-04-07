@@ -32,9 +32,9 @@ public class ProblemInstance
 
     public void print()
     {
-        System.out.println("Problem instance " + name + ".");
+        System.out.println("Instance " + name + ".");
 
-        System.out.println(providerAmount + " providers and " + clientAmount + " clients.");
+        System.out.println(providerAmount + " fournisseurs et " + clientAmount + " clients.");
     }
 
     public int eval(ArrayList<Integer> openedProvidersIndices)
