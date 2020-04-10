@@ -61,4 +61,21 @@ public class ProblemInstance
 
         return providerCostSum + connectionCostSum;
     }
+
+    public int[] getLowestClientConnectionCost(int client)
+    {
+        int minConnectionCost = clientConnectionCosts[0][client];
+        int minProviderIndex = 0;
+
+        for(int providerIndex = 1; providerIndex < providerAmount; providerIndex++)
+        {
+            if(clientConnectionCosts[providerIndex][client] < minConnectionCost)
+            {
+                minConnectionCost = clientConnectionCosts[providerIndex][client];
+                minProviderIndex = providerIndex;
+            }
+        }
+
+        return new int[]{minProviderIndex, minConnectionCost};
+    }
 }

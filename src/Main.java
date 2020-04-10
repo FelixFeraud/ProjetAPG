@@ -1,4 +1,3 @@
-import org.gnu.glpk.*;
 import java.util.ArrayList;
 
 public class Main
@@ -8,7 +7,7 @@ public class Main
         System.out.println("Projet APG");
 
         ProblemReader pr = new ProblemReader();
-        ProblemInstance instance = pr.generateInstanceFromFile("C:\\Users\\utilisateur\\Desktop\\BildeKrarup\\B\\B1.1");
+        ProblemInstance instance = pr.generateInstanceFromFile("C:\\Users\\utilisateur\\Desktop\\BildeKrarup\\B\\B1.2");
 
         instance.print();
 
@@ -20,10 +19,10 @@ public class Main
         System.out.println("\n--------------------\n");
 
         System.out.println("\n--------------------\nProgramme Linéaire :");
-        //System.out.println("\tCoût = " + instance.eval(openedProviders));
-        //System.out.print("\tFournisseurs ouverts = ");
-        //displayOpenedProviders(openedProviders);
-        GLPKSolver.solve(instance);
+        openedProviders = GLPKSolver.solve(instance);
+        System.out.println("\tCoût = " + instance.eval(openedProviders));
+        System.out.print("\tFournisseurs ouverts = ");
+        displayOpenedProviders(openedProviders);
         System.out.println("\n--------------------\n");
     }
 
