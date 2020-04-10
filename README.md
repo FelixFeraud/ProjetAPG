@@ -7,7 +7,7 @@ On possède un ensemble de fournisseurs 1 <= i <= n, possédant chacun un coût 
 
 On possède un ensemble de clients 1 <= j <= m.
 
-Chaque paire fournisseur/client possède un coût c(i, j). Un fournisseur ne peut fournir un client
+Chaque connexion fournisseur/client possède un coût c(i, j). Un fournisseur ne peut fournir un client
 que s'il est ouvert.
 
 Il faut trouver un ensemble de fournisseurs à ouvrir de manière à minimiser le coût total.
