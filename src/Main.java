@@ -7,12 +7,15 @@ public class Main
         System.out.println("Projet APG");
 
         ProblemReader pr = new ProblemReader();
+        // TODO : chargement d'un ou plusieurs fichiers en ligne de commande.
         ProblemInstance instance = pr.generateInstanceFromFile("C:\\Users\\utilisateur\\Desktop\\BildeKrarup\\B\\B1.2");
 
         instance.print();
 
+        ArrayList<Integer> openedProviders;
+
         System.out.println("\n--------------------\nAlgorithme Glouton :");
-        ArrayList<Integer> openedProviders = Glouton.solve(instance);
+        openedProviders = Glouton.solve(instance);
         System.out.println("\tCoût = " + instance.eval(openedProviders));
         System.out.print("\tFournisseurs ouverts = ");
         displayOpenedProviders(openedProviders);
@@ -20,6 +23,14 @@ public class Main
 
         System.out.println("\n--------------------\nProgramme Linéaire :");
         openedProviders = GLPKSolver.solve(instance);
+        System.out.println("\tCoût = " + instance.eval(openedProviders));
+        System.out.print("\tFournisseurs ouverts = ");
+        displayOpenedProviders(openedProviders);
+        System.out.println("\n--------------------\n");
+
+
+        System.out.println("\n--------------------\nProgramme Linéaire :");
+        openedProviders = RandomGLPKSolver.solve(instance);
         System.out.println("\tCoût = " + instance.eval(openedProviders));
         System.out.print("\tFournisseurs ouverts = ");
         displayOpenedProviders(openedProviders);
