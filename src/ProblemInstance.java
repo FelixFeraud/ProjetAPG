@@ -1,16 +1,19 @@
 import java.util.ArrayList;
 
+/**
+ * Caractérise une instance d'un problème de connexions fournisseurs/clients
+ */
 public class ProblemInstance
 {
-    public String name;
+    String name;
 
-    public int providerAmount;
-    public int clientAmount;
+    int providerAmount;
+    int clientAmount;
 
-    public int[] providerOpeningCosts;
-    public int[][] clientConnectionCosts;
+    int[] providerOpeningCosts;
+    int[][] clientConnectionCosts;
 
-    public ProblemInstance(String name, int providerAmount, int clientAmount)
+    ProblemInstance(String name, int providerAmount, int clientAmount)
     {
         this.name = name;
         this.providerAmount = providerAmount;
@@ -20,24 +23,24 @@ public class ProblemInstance
         clientConnectionCosts = new int[providerAmount][clientAmount];
     }
 
-    public void addProviderOpeningCost(int provider, int cost)
+    void addProviderOpeningCost(int provider, int cost)
     {
         providerOpeningCosts[provider] = cost;
     }
 
-    public void addClientConnectionCost(int provider, int client, int cost)
+    void addClientConnectionCost(int provider, int client, int cost)
     {
         clientConnectionCosts[provider][client] = cost;
     }
 
-    public void print()
+    void print()
     {
         System.out.println("Instance " + name + ".");
 
         System.out.println(providerAmount + " fournisseurs et " + clientAmount + " clients.");
     }
 
-    public int eval(ArrayList<Integer> openedProvidersIndices)
+    int eval(ArrayList<Integer> openedProvidersIndices)
     {
         int providerCostSum = 0;
         int connectionCostSum = 0;
@@ -60,22 +63,5 @@ public class ProblemInstance
         }
 
         return providerCostSum + connectionCostSum;
-    }
-
-    public int[] getLowestClientConnectionCost(int client)
-    {
-        int minConnectionCost = clientConnectionCosts[0][client];
-        int minProviderIndex = 0;
-
-        for(int providerIndex = 1; providerIndex < providerAmount; providerIndex++)
-        {
-            if(clientConnectionCosts[providerIndex][client] < minConnectionCost)
-            {
-                minConnectionCost = clientConnectionCosts[providerIndex][client];
-                minProviderIndex = providerIndex;
-            }
-        }
-
-        return new int[]{minProviderIndex, minConnectionCost};
     }
 }

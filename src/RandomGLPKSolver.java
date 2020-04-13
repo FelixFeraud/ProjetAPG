@@ -3,16 +3,22 @@ import org.gnu.glpk.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class RandomGLPKSolver
+class RandomGLPKSolver
 {
-    public static ArrayList<Integer> solve(ProblemInstance instance)
+    /**
+     * Cherche une solution optimale à une instance de problème de fournisseurs.
+     * @param instance L'instance du problème à résoudre.
+     * @param loops Le nombre de boucles à effectuer avant de renvoyer la meilleure solution trouvée.
+     * @return Une liste d'entiers indiquant les fournisseurs à ouvrir.
+     */
+    static ArrayList<Integer> solve(ProblemInstance instance, int loops)
     {
         ArrayList<Double> openingProbabilities = solveLP(instance);
 
         int bestCost = Integer.MAX_VALUE;
         ArrayList<Integer> bestList = new ArrayList<>();
 
-        for(int i = 0; i < 1000; i++)
+        for(int i = 0; i < loops; i++)
         {
             ArrayList<Integer> randomList = randomProviderSelection(openingProbabilities);
             int cost = customEval(instance, randomList);
@@ -26,7 +32,12 @@ public class RandomGLPKSolver
         return bestList;
     }
 
-    public static ArrayList<Integer> randomProviderSelection(ArrayList<Double> openingProbabilities)
+    /**
+     * Utilise les probabilités trouvées pour déterminer si un fournisseur ouvrira ou non.
+     * @param openingProbabilities Les probabilités pour chaque fournisseur qu'il ouvre, trouvées par solveLP().
+     * @return La liste des fournisseurs ouverts.
+     */
+    private static ArrayList<Integer> randomProviderSelection(ArrayList<Double> openingProbabilities)
     {
         Random seed = new Random();
         ArrayList<Integer> openedProviders = new ArrayList<>();
@@ -41,19 +52,23 @@ public class RandomGLPKSolver
         return openedProviders;
     }
 
-    public static ArrayList<Double> solveLP(ProblemInstance instance)
+    /**
+     * Résout le problème relâché.
+     * @param instance Instance d'un problème donné.
+     * @return Une liste de doubles indiquant les probabilités qu'un fournisseur soit ouvert.
+     */
+    private static ArrayList<Double> solveLP(ProblemInstance instance)
     {
         System.out.println("Résolution de " + instance.name + " avec GLPK (version " + GLPK.glp_version() + ")\n");
-        ArrayList<Double> openingProbabilities = new ArrayList<Double>();
+        ArrayList<Double> openingProbabilities = new ArrayList<>();
 
         glp_prob LP = GLPK.glp_create_prob();
 
-        // Objective function
         GLPK.glp_set_obj_dir(LP, GLPKConstants.GLP_MIN);
 
         GLPK.glp_add_cols(LP, instance.providerAmount + (instance.clientAmount * instance.providerAmount));
 
-        // X
+        // On ajoute les X (fournisseurs)
         for(int i = 0; i < instance.providerAmount; i++)
         {
             GLPK.glp_set_obj_coef(LP, i + 1, (double)instance.providerOpeningCosts[i]);
@@ -63,7 +78,7 @@ public class RandomGLPKSolver
             GLPK.glp_set_col_bnds(LP, i + 1, GLPKConstants.GLP_DB, 0, 1);
         }
 
-        // Y
+        // Ensuite les Y (connexions clients/fournisseurs)
         int colCounter = 0;
         for(int i = 0; i < instance.providerAmount; i++)
         {
@@ -77,7 +92,10 @@ public class RandomGLPKSolver
             }
         }
 
-        // yi,j <= xi
+        // Faire en sorte que Yi,j = 1 seulement si Xi = 1.
+        // Pour cela, chaque ligne sera construite de cette manière :
+        // -Xi + Yi,j <= 0
+        // Ce qui peut être simplifié à Yi,j <= Xi
 
         GLPK.glp_add_rows(LP, GLPK.glp_get_num_cols(LP) - instance.providerAmount);
 
@@ -98,7 +116,7 @@ public class RandomGLPKSolver
 
         int rowAmount = GLPK.glp_get_num_rows(LP);
 
-        // sum(yi,j) = 1
+        // Seul 1 fournisseur fournit un client.
 
         GLPK.glp_add_rows(LP, instance.clientAmount);
 
@@ -116,7 +134,8 @@ public class RandomGLPKSolver
             setMatrixRow(LP, rowAmount + j + 1, colIndices, values);
         }
 
-        // solve
+        // On résout le PL avec l'algorithme du simplex.
+        // On obtient alors les probabilités qu'un fournisseur soit ouvert, et on peut les récupérer.
         glp_smcp simplexParams = new glp_smcp();
         GLPK.glp_init_smcp(simplexParams);
         simplexParams.setMsg_lev(GLPKConstants.GLP_MSG_OFF);
@@ -131,6 +150,13 @@ public class RandomGLPKSolver
         return openingProbabilities;
     }
 
+    /**
+     * Fonction utilitaire pour simplifier la création de lignes.
+     * @param LP Programme linéaire GLPK.
+     * @param row Indice de la ligne.
+     * @param colIndices Indices des colonnes où l'on veut insérer les valeurs.
+     * @param values Valeurs à insérer aux indices indiqués précédemment.
+     */
     private static void setMatrixRow(glp_prob LP, int row, int[] colIndices, double[] values)
     {
         SWIGTYPE_p_int glpkIndices = Utils.intArrayToSwig(colIndices.length, colIndices);
@@ -142,6 +168,11 @@ public class RandomGLPKSolver
         GLPK.delete_doubleArray(glpkValues);
     }
 
+    /**
+     * @param instance L'instance d'un problème donné.
+     * @param solution Une liste de fournisseurs à évaluer solution du problème.
+     * @return La valeur maximum possible pour les entiers si la solution ne contient aucun fournisseur (eval(Ø) = +∞), eval(solution) sinon.
+     */
     private static int customEval(ProblemInstance instance, ArrayList<Integer> solution)
     {
         if(solution.size() == 0)

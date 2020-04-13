@@ -2,9 +2,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class ProblemReader
+/**
+ * Classe utilitaire pour générer une instance de problème à partir d'un fichier.
+ */
+class ProblemReader
 {
-    public ProblemInstance generateInstanceFromFile(String path)
+    ProblemInstance generateInstanceFromFile(String path)
     {
         ProblemInstance instance;
         try

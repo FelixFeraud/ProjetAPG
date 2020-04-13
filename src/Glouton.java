@@ -1,8 +1,13 @@
 import java.util.ArrayList;
 
-public class Glouton
+class Glouton
 {
-    public static ArrayList<Integer> solve(ProblemInstance instance)
+    /**
+     * Cherche une solution optimale à une instance de problème de fournisseurs.
+     * @param instance L'instance du problème à résoudre.
+     * @return Une liste d'entiers indiquant les fournisseurs à ouvrir.
+     */
+    static ArrayList<Integer> solve(ProblemInstance instance)
     {
         ArrayList<Integer> solution = new ArrayList<>();
 
@@ -32,6 +37,11 @@ public class Glouton
         return solution;
     }
 
+    /**
+     * @param instance Instance d'un problème donné.
+     * @param currentSolution Meilleure solution actuelle que l'on va tenter de rendre encore meilleure.
+     * @return Vrai si une meilleure solution que l'actuelle existe, faux sinon.
+     */
     private static boolean betterSolutionExists(ProblemInstance instance, ArrayList<Integer> currentSolution)
     {
         for(int providerIndex = 0; providerIndex < instance.providerAmount; providerIndex++)
@@ -49,6 +59,11 @@ public class Glouton
         return false;
     }
 
+    /**
+     * @param instance L'instance d'un problème donné.
+     * @param solution Une liste de fournisseurs à évaluer solution du problème.
+     * @return La valeur maximum possible pour les entiers si la solution ne contient aucun fournisseur (eval(Ø) = +∞), eval(solution) sinon.
+     */
     private static int customEval(ProblemInstance instance, ArrayList<Integer> solution)
     {
         if(solution.size() == 0)

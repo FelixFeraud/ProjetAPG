@@ -2,6 +2,9 @@ import org.gnu.glpk.GLPK;
 import org.gnu.glpk.SWIGTYPE_p_double;
 import org.gnu.glpk.SWIGTYPE_p_int;
 
+/**
+ * Classe utilisée pour gérer les tableaux utilisés par GLPK.
+ */
 class Utils
 {
     /**
