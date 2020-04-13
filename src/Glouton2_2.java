@@ -3,7 +3,7 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.PriorityQueue;
 
-class Glouton2_1fi
+class Glouton2_2
 {
     // Dernier Y calculé par computeBeta
     private static ArrayList<Integer> betaY;
@@ -26,7 +26,7 @@ class Glouton2_1fi
         for(int i = 0; i < instance.providerAmount; i++)
         {
             int bestRatio = computeBeta(instance, i, O, S);
-            heap.add(new Object[]{bestRatio, EventType.PROVIDER, i, betaY});
+            heap.add(new Object[]{bestRatio, EventType.PROVIDER, i});
         }
 
         while(!heap.isEmpty())
@@ -37,22 +37,22 @@ class Glouton2_1fi
                 int provider = (int) event[2];
                 int currentBestRatio = computeBeta(instance, provider, O, S);
 
-                Object[] currentEvent = new Object[]{currentBestRatio, EventType.PROVIDER, provider, betaY};
+                Object[] currentEvent = new Object[]{currentBestRatio, EventType.PROVIDER, provider};
 
-                if((int)event[0] == currentBestRatio)
+                if((int)event[0] == (int)currentEvent[0])
                 {
-                    O.add(provider);
-                    S.removeAll(betaY);
+                        O.add(provider);
+                        S.removeAll(betaY);
 
-                    for(int client : S)
-                    {
-                        heap.add(new Object[]
-                                {
-                                        instance.clientConnectionCosts[provider][client],
-                                        EventType.CONNECTION,
-                                        client
-                                });
-                    }
+                        for(int client : S)
+                        {
+                            heap.add(new Object[]
+                                    {
+                                            instance.clientConnectionCosts[provider][client],
+                                            EventType.CONNECTION,
+                                            client
+                                    });
+                        }
                 }
                 else
                 {
@@ -61,11 +61,8 @@ class Glouton2_1fi
             }
             else
             {
-                int client = (int) event[2];
-                if(S.contains(client))
-                {
-                    S.remove((Integer)client);
-                }
+                Integer client = (Integer) event[2];
+                S.remove(client);
             }
         }
 
@@ -178,6 +175,19 @@ class Glouton2_1fi
         }
 
         return (double)(instance.providerOpeningCosts[provider] + newClientsCostSum - alreadyConnectedSum) / Y.size();
+    }
+
+    /**
+     * @param instance L'instance d'un problème donné.
+     * @param solution Une liste de fournisseurs à évaluer solution du problème.
+     * @return La valeur maximum possible pour les entiers si la solution ne contient aucun fournisseur (eval(Ø) = +∞), eval(solution) sinon.
+     */
+    private static int customEval(ProblemInstance instance, ArrayList<Integer> solution)
+    {
+        if(solution.size() == 0)
+            return Integer.MAX_VALUE;
+        else
+            return instance.eval(solution);
     }
 
     /**

@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 
+/**
+ * Projet APG
+ * Félix Féraud
+ * M1 Informatique - Université d'Aix Marseille
+ * 13 avril 2020
+ */
 public class ProjetAPG
 {
     /**
@@ -17,11 +23,12 @@ public class ProjetAPG
 
         ArrayList<Integer> openedProviders;
 
+        // Exécute chaque algorithme sur le fichier d'instance chargé.
         System.out.println("\n----------------------------------------\nAlgorithme Glouton 1 :");
         openedProviders = Glouton.solve(instance);
         System.out.println("\tCoût = " + instance.eval(openedProviders));
         System.out.print("\tFournisseurs ouverts = " + properDisplay(openedProviders));
-        System.out.println("\n--------------------\n");
+        System.out.println("\n----------------------------------------\n");
 
         System.out.println("\n----------------------------------------\nProgramme Linéaire :");
         openedProviders = GLPKSolver.solve(instance);
@@ -35,17 +42,25 @@ public class ProjetAPG
         System.out.print("\tFournisseurs ouverts = " + properDisplay(openedProviders));
         System.out.println("\n----------------------------------------\n");
 
-        System.out.println("\n----------------------------------------\nAlgorithme Glouton 2-1*fi :");
-        openedProviders = Glouton2_1fi.solve(instance);
+        System.out.println("\n----------------------------------------\nAlgorithme Glouton 2-1 (1*fi) :");
+        openedProviders = Glouton2_1.solve(instance, 1);
         System.out.println("\tCoût = " + instance.eval(openedProviders));
         System.out.print("\tFournisseurs ouverts = " + properDisplay(openedProviders));
         System.out.println("\n----------------------------------------\n");
 
-        System.out.println("\n----------------------------------------\nAlgorithme Glouton 2-2*fi :");
-        openedProviders = Glouton2_2fi.solve(instance);
+        System.out.println("\n----------------------------------------\nAlgorithme Glouton 2-1 (2*fi) :");
+        openedProviders = Glouton2_1.solve(instance, 2);
         System.out.println("\tCoût = " + instance.eval(openedProviders));
         System.out.print("\tFournisseurs ouverts = " + properDisplay(openedProviders));
         System.out.println("\n----------------------------------------\n");
+
+        /*
+        System.out.println("\n----------------------------------------\nAlgorithme Glouton 2-2*fi :");
+        openedProviders = Glouton2_2.solve(instance);
+        System.out.println("\tCoût = " + instance.eval(openedProviders));
+        System.out.print("\tFournisseurs ouverts = " + properDisplay(openedProviders));
+        System.out.println("\n----------------------------------------\n");
+        */
     }
 
     /**

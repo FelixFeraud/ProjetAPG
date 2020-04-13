@@ -3,21 +3,28 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.PriorityQueue;
 
-class Glouton2_2fi
+class Glouton2_1
 {
     // Les derniers résultats du calcul de beta
     private static int betaBestProvider;
     private static ArrayList<Integer> betaBestY;
 
+    // Multiplicateur de fi
+    private static int fi = 1;
+
     /**
      * Cherche une solution optimale à une instance de problème de fournisseurs.
      * @param instance L'instance du problème à résoudre.
+     * @param providerCostMultiplier Le multiplicateur fi appliqué au coût d'ouverture des fournisseurs lors du calcul de Beta (1 ou 2 dans notre cas).
      * @return Une liste d'entiers indiquant les fournisseurs à ouvrir.
      */
-    static ArrayList<Integer> solve(ProblemInstance instance)
+    static ArrayList<Integer> solve(ProblemInstance instance, int providerCostMultiplier)
     {
         ArrayList<Integer> O = new ArrayList<>();
         ArrayList<Integer> S = new ArrayList<>();
+
+        fi = providerCostMultiplier;
+
 
         for(int client = 0; client < instance.clientAmount; client++)
             S.add(client);
@@ -82,7 +89,7 @@ class Glouton2_2fi
         {
             if(!O.contains(provider))
             {
-                int firstPart = 2 * instance.providerOpeningCosts[provider];
+                int firstPart = fi * instance.providerOpeningCosts[provider];
 
                 PriorityQueue<Integer[]> connectionCostsHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[0]));
                 ArrayList<Integer> Y = new ArrayList<>();
